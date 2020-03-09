@@ -5,13 +5,8 @@
 # Platform definitions
 #############################################################
 
-BOARD ?= STM32F767
-ifeq ($(BOARD),STM32F767)
-	ARM_ARCH := armv7e-m
-	ARM_CPU := cortex-m7
-	ARM_FLOAT := soft
-	ARM_FPU := fpv5-sp-d16
-else ifeq ($(BOARD),IMX8QM)
+BOARD ?= IMX8QM
+ifeq ($(BOARD),IMX8QM)
 	ARM_ARCH := armv7e-m
 	ARM_CPU := cortex-m7
 	ARM_FLOAT := soft
@@ -59,7 +54,7 @@ all: clean
 	$(MAKE) -C zone3
 	$(MAKE) -C zone4
 	java -jar multizone.jar \
-	-k ../hexfive-kern-arm/build/IMX8QM/kernel.hex \
+	-k ../hexfive-kern-arm/build/$(BOARD)/kernel.hex \
 	-a $(BOARD) \
 	-c bsp/$(BOARD)/multizone.cfg \
 	zone1/zone1.elf \
