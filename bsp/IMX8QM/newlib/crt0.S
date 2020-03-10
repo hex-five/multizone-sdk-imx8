@@ -93,6 +93,9 @@ loopfill_zerobss:
 // Call the main function
 	bl   main
 
+	b		.
+
+
 
 	.global _init
   	.type   _init, %function
