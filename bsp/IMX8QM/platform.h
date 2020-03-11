@@ -5,37 +5,23 @@
 
 
 /************************************************************************************
-* 			               NUCLEO-F746ZG PLATFORM GERENIC			
+* 			               IMX8QM-MEK PLATFORM GENERIC			
 ************************************************************************************/
 
-#define CPU_FREQ                        (16000000)              /*!< Hz */
-#define RTC_FREQ                        (16000000)              /*!< Hz */
+#define CPU_FREQ                        (264000000)              /*!< Hz */
+#define RTC_FREQ                        (264000000)              /*!< Hz */
 
 #define MPU_REGIONS                     (8)
 
-#define UART_IRQn                       USART3_IRQn
+#define UART_IRQn                       LPUART_IRQn
 
-#define LED                             LED_GREEN
-#define LED_PIN                         LED_GREEN_PIN
+#define LED                             0
+#define LED_PIN                         0
 
-#define LED_GREEN                       (0x00)
-#define LED_BLUE                        (0x07)
-#define LED_RED                         (0x0E)
-#define LED_GREEN_PIN                   (1 << LED_GREEN)
-#define LED_BLUE_PIN                    (1 << LED_BLUE)
-#define LED_RED_PIN                     (1 << LED_RED)
+#define BTN                             0
+#define BTN_PIN                         0
+#define BTN_IRQn                        0
 
-#define BTN                             BTN0
-#define BTN_PIN                         BTN0_PIN
-#define BTN_IRQn                        BTN0_IRQn
-
-#define BTN0                            (13U)
-#define BTN0_PIN                        (13U)
-#define BTN0_IRQn                       EXTI_IRQn
-
-#define SPI_TDI                         (5) 	                /*!< in 		    - PA5           */
-#define SPI_TCK                         (6)	                    /*!< out (master)   - PA6           */
-#define SPI_TDO                         (7)	                    /*!< out		    - PA7           */
 
 #define UART_RX_OFFSET                  (0x08)
 #define UART_TX_OFFSET                  (0x09)
@@ -47,170 +33,67 @@
 
 
 /************************************************************************************
-* 			            STM32F746ZG PERIPHERALS SPECIFIC				
+* 			            IMX8QM (CM4) PERIPHERALS SPECIFIC				
 ************************************************************************************/
 
-#define PERIPH_BASE                 (0x40000000UL)              /*!< AHB/ABP Peripherals            */
+#define PERIPH_BASE                 (0x40000000UL)              /*!< AHB/ABP Peripherals                */
 #define APB1PERIPH_BASE             PERIPH_BASE
 #define APB2PERIPH_BASE             (PERIPH_BASE + 0x00010000UL)
 #define AHB1PERIPH_BASE             (PERIPH_BASE + 0x00020000U)
 
 
-/* Clock and reset managements (RCC) */
-#define RCC_BASE                    (AHB1PERIPH_BASE + 0x3800U)
-#define RCC_REG(offset)             _REG32(RCC_BASE, offset)
+/* Low Power Universal Asynchronous Receiver/Transmitter (LPUART) */
+#define LPUART_BASE                 (APB1PERIPH_BASE + 0x4800UL)
+#define LPUART_REG(offset)          _REG32(LPUART_BASE, offset)
 
-#define RCC_AHB1ENR                 (0x30)                      /*!< RCC AHB1 peripheral clock        */
-#define RCC_APB1ENR                 (0x40)                      /*!< RCC APB1 peripheral clock enable */
-#define RCC_APB2ENR                 (0x44)                      /*!< RCC APB2 peripheral clock enable */
+#define LPUART_VERID                (0x00)                      /*!< Version ID Register                */
+#define LPUART_PARAM                (0x04)                      /*!< Parameter Register                 */
+#define LPUART_GLOBAL               (0x08)                      /*!< LPUART Global Register             */
+#define LPUART_PINCFG               (0x0C)                      /*!< LPUART Pin Configuration Register  */
+#define LPUART_BAUD                 (0x10)                      /*!< LPUART Baud Rate Register          */
+#define LPUART_STAT                 (0x14)                      /*!< LPUART Status Register             */
+#define LPUART_CTRL                 (0x18)                      /*!< LPUART Control Register            */
+#define LPUART_DATA                 (0x1C)                      /*!< LPUART Data Register               */
+#define LPUART_MATCH                (0x20)                      /*!< LPUART Match Address Register      */
+#define LPUART_MODIR                (0x24)                      /*!< LPUART Modem IrDA Register         */
+#define LPUART_FIFO                 (0x28)                      /*!< LPUART FIFO Register               */
+#define LPUART_WATER                (0x2C)                      /*!< LPUART Watermark Register          */
 
-#define RCC_AHB1ENR_GPIOAEN         (0x00000001)
-#define RCC_AHB1ENR_GPIOBEN         (0x00000002)
-#define RCC_AHB1ENR_GPIOCEN         (0x00000004)
-#define RCC_AHB1ENR_GPIODEN         (0x00000008)
+#define LPUART_VERID_VAL            (0x04010003)
 
-#define RCC_APB1ENR_USART3EN        (0x00040000)
-#define RCC_APB2ENR_SYSCFGEN        (0x00004000)
+#define LPUART_GLOBAL_RST           (1 << 1)
 
-#define RCC_USART3_CLKSOURCE        (0x00000030)   
+#define LPUART_BAUD_SBR_MASK        (0x1FFF)
+#define LPUART_BAUD_SBNS_MASK       (1 << 13)
+#define LPUART_BAUD_OSR_MASK        (0x1F000000)
+#define LPUART_BAUD_SBNS_M10        (1 << 29)
 
+#define LPUART_STAT_RDRF            (1 << 21)                   /*!< Receive Data Register Full Flag    */
+#define LPUART_STAT_TC              (1 << 22)                   /*!< Transmission Complete Flag         */
+#define LPUART_STAT_TRDE            (1 << 23)                   /*!< Transmit Data Register Empty Flag  */
 
-/* System configuration controller (SYSCFG) */
-#define SYSCFG_BASE                 (APB2PERIPH_BASE + 0x3800UL)
-#define SYSCFG_REG(offset)          _REG32(SYSCFG_BASE, offset)
+#define LPUART_CTRL_PT_MASK         (1 << 0)                    /*!< Parity Type Mask                   */
+#define LPUART_CTRL_PT_E            (0 << 0)                    /*!< Parity Type - Even parity          */
+#define LPUART_CTRL_PT_O            (1 << 0)                    /*!< Parity Type - Odd parity           */
+#define LPUART_CTRL_PE_MASK         (1 << 1)                    /*!< Parity Enable Mask                 */
+#define LPUART_CTRL_PE_N            (0 << 1)                    /*!< Parity Enable - No parity          */
+#define LPUART_CTRL_PE_P            (1 << 1)                    /*!< Parity Enable - Parity enable      */
+#define LPUART_CTRL_M_MASK          (1 << 4)                    /*!< 9-Bit or 8-Bit Mode Select Mask    */
+#define LPUART_CTRL_M_8B            (0 << 4)                    /*!< 9-Bit or 8-Bit Mode Select - 8-Bit */
+#define LPUART_CTRL_M_9B            (1 << 4)                    /*!< 9-Bit or 8-Bit Mode Select - 9-Bit */
+#define LPUART_CTRL_RE_MASK         (1 << 18)                   /*!< Receiver Enable Mask               */
+#define LPUART_CTRL_RE_D            (0 << 18)                   /*!< Receiver Enable - disable          */
+#define LPUART_CTRL_RE_E            (1 << 18)                   /*!< Receiver Enable - enable           */
+#define LPUART_CTRL_TE_MASK         (1 << 19)                   /*!< Transmitter Enable Mask            */
+#define LPUART_CTRL_TE_D            (0 << 19)                   /*!< Transmitter Enable - disable       */
+#define LPUART_CTRL_TE_E            (1 << 19)                   /*!< Transmitter Enable - enable        */
 
-#define SYSCFG_MEMRMP               (0x00)                      /*!< SYSCFG memory remap                        */
-#define SYSCFG_PMC                  (0x04)                      /*!< SYSCFG peripheral mode configuration       */
-#define SYSCFG_EXTICR0              (0x08)                      /*!< SYSCFG external interrupt configuration    */
-#define SYSCFG_EXTICR1              (0x0C)                      /*!< SYSCFG external interrupt configuration    */
-#define SYSCFG_EXTICR2              (0x10)                      /*!< SYSCFG external interrupt configuration    */
-#define SYSCFG_EXTICR3              (0x14)                      /*!< SYSCFG external interrupt configuration    */
-    /* Reserved, 0x18 */    
-#define SYSCFG_CBR                  (0x1C)                      /*!< SYSCFG Class B                             */
-#define SYSCFG_CMPCR                (0x20)                      /*!< SYSCFG Compensation cell control           */
-
-#define SYSCFG_EXTI_LINE13          (0x00F0U << 16U | 3U)       /*!< EXTI_POSITION_4  | EXTICR[3]               */
-#define SYSCFG_EXTI_PORTC           (2U)                        /*!< EXTI PORT C                                */
-
-
-/* General-purpose input/output (GPIO) */
-#define GPIOA_BASE                  (AHB1PERIPH_BASE + 0x0000UL)
-#define GPIOB_BASE                  (AHB1PERIPH_BASE + 0x0400UL)
-#define GPIOC_BASE                  (AHB1PERIPH_BASE + 0x0800UL)
-#define GPIOD_BASE                  (AHB1PERIPH_BASE + 0x0C00UL)
-#define GPIOA_REG(offset)           _REG32(GPIOA_BASE, offset)
-#define GPIOB_REG(offset)           _REG32(GPIOB_BASE, offset)
-#define GPIOC_REG(offset)           _REG32(GPIOC_BASE, offset)
-#define GPIOD_REG(offset)           _REG32(GPIOD_BASE, offset)
-
-#define GPIO_MODER                  (0x00)                      /*!< GPIO port mode                         */
-#define GPIO_OTYPER                 (0x04)                      /*!< GPIO port output type                  */
-#define GPIO_OSPEEDR                (0x08)                      /*!< GPIO port output speed                 */
-#define GPIO_PUPDR                  (0x0C)                      /*!< GPIO port pull-up/pull-down            */
-#define GPIO_IDR                    (0x10)                      /*!< GPIO port input data                   */
-#define GPIO_ODR                    (0x14)                      /*!< GPIO port output data                  */
-#define GPIO_BSRR                   (0x18)                      /*!< GPIO port bit set/reset                */
-#define GPIO_LCKR                   (0x1C)                      /*!< GPIO port configuration lock           */
-#define GPIO_AFR0                   (0x20)                      /*!< GPIO alternate function                */
-#define GPIO_AFR1                   (0x24)                      /*!< GPIO alternate function                */
-
-#define GPIO_OUTPUT_PUSHPULL        (0x00000000U)               /*!< Select push-pull as output type        */
-#define GPIO_MODE_OUTPUT            (0x00000001U)               /*!< Output Push Pull Mode                  */
-#define GPIO_MODE_ALTERNATE         (0x00000002U)               /*!< Select alternate function mode         */
-#define GPIO_MODE_INPUT             (0x00000000U)               /*!< Select input function mode             */
-
-#define GPIO_NOPULL                 (0x00000000U)               /*!< No Pull-up or Pull-down activation     */
-#define GPIO_PULLUP                 (0x00000001U)               /*!< Pull-up activation                     */
-#define GPIO_SPEED_FREQ_VERY_HIGH   (0x00000003U)               /*!< High speed                             */
-
-#define GPIO_AF_7                   (0x00000007U)               /*!<  Select alternate function 7           */
-
-#define GPIO_MODER_MODER0           (0x00000003)   
-#define GPIO_OSPEEDER_OSPEEDR0      (0x00000003)
-#define GPIO_OTYPER_OT_0            (0x00000001)  
-#define GPIO_PUPDR_PUPDR0           (0x00000003)
-#define GPIO_AFRH_AFRH0             (0x0000000F)
-
-#define GPIO_NUMBER                 (16)
-#define GPIO_MODE                   (0x00000003)
-#define GPIO_OUTPUT_TYPE            (0x00000010)
-
-
-/* External interrupts (EXTI) */
-#define EXTI_BASE                   (APB2PERIPH_BASE + 0x3C00UL)
-#define EXTI_REG(offset)            _REG32(EXTI_BASE, offset)
-
-#define EXTI_IMR                    (0x00)                      /*!< EXTI Interrupt mask                */
-#define EXTI_EMR                    (0x04)                      /*!< EXTI Event mask                    */
-#define EXTI_RTSR                   (0x08)                      /*!< EXTI Rising trigger selection      */
-#define EXTI_FTSR                   (0x0C)                      /*!< EXTI Falling trigger selection     */
-#define EXTI_SWIER                  (0x10)                      /*!< EXTI Software interrupt event      */
-#define EXTI_PR                     (0x14)                      /*!< EXTI Pending                       */
-
-#define EXTI_IMR_MR13               (0x00002000)                /*!< Interrupt Mask on line 13          */
-
-#define EXTI_IRQn                   (0x38)
-
-
-/* Universal Synchronous/Asynchronous Receiver/Transmitter 3 (USART3) */
-#define USART3_BASE                 (APB1PERIPH_BASE + 0x4800UL)
-#define USART3_REG(offset)          _REG32(USART3_BASE, offset)
-
-#define USART_CR1                   (0x00)                      /*!< USART Control register 1           */
-#define USART_CR2                   (0x04)                      /*!< USART Control register 2           */
-#define USART_CR3                   (0x08)                      /*!< USART Control register 3           */
-#define USART_BRR                   (0x0C)                      /*!< USART Baud rate                    */
-#define USART_GTPR                  (0x10)                      /*!< USART Guard time and prescaler     */
-#define USART_RTOR                  (0x14)                      /*!< USART Receiver Time Out            */
-#define USART_RQR                   (0x18)                      /*!< USART Request                      */
-#define USART_ISR                   (0x1C)                      /*!< USART Interrupt and status         */
-#define USART_ICR                   (0x20)                      /*!< USART Interrupt flag Clear         */
-#define USART_RDR                   (0x24)                      /*!< USART Receive Data                 */
-#define USART_TDR                   (0x28)                      /*!< USART Transmit Data                */
-
-#define USART3_PERIPHCLK            (0x00F42400U)
-
-#define USART_DATAWIDTH_8B          (0x00000000U)               /*!< 8 bits word length                 */
-#define USART_STOPBITS_1            (0x00000000U)               /*!< 1 stop bit                         */
-#define USART_PARITY_NONE           (0x00000000U)               /*!< Parity control disabled            */
-
-#define USART_DIRECTION_TX_RX       (USART_CR1_TE|USART_CR1_RE)  
-
-#define USART_HWCONTROL_NONE        (0x00000000U)               /*!< CTS and RTS hardware disabled      */
-
-#define USART_OVERSAMPLING_16       (0x00000000U)  
-
-#define USART_CR1_M                 (0x10001000)
-#define USART_CR1_PCE               (0x00000400)
-#define USART_CR1_PS                (0x00000200)
-#define USART_CR1_TE                (0x00000008)                /*!< Transmitter Enable                 */
-#define USART_CR1_RE                (0x00000004)                /*!< Receiver Enable                    */ 
-#define USART_CR1_OVER8             (0x00008000)
-#define USART_CR1_RXNEIE            (0x00000020)
-#define USART_CR1_UE                (0x00000001)
-
-#define USART_CR2_STOP              (0x00003000)
-#define USART_CR2_LINEN             (0x00004000)
-#define USART_CR2_CLKEN             (0x00000800)
-
-#define USART_CR3_RTSE              (0x00000100)
-#define USART_CR3_CTSE              (0x00000200)
-#define USART_CR3_SCEN              (0x00000020)
-#define USART_CR3_IREN              (0x00000002)
-#define USART_CR3_HDSEL             (0x00000008)
-
-#define USART_ICR_ORECF             (0x00000008)                /*!< OverRun Error Clear Flag           */
-
-#define USART_ISR_ORE               (0x00000008)                /*!< OverRun Error                      */
-#define USART_ISR_RXNE              (0x00000020)                /*!< Read Data Register Not Empty       */
-#define USART_ISR_TXE               (0x00000080)                /*!< Transmit Data Register Empty       */
-
-#define USART3_IRQn                 (55)
+#define LPUART_IRQn                 (00)
 
 
 
 /************************************************************************************
-* 			                CORTEX-M7 ARCH SPECIFIC				
+* 			                CORTEX-M4 ARCH SPECIFIC				
 ************************************************************************************/
 
 /* System Control Space */
