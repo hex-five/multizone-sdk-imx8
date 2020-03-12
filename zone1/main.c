@@ -492,14 +492,50 @@ int readline() {
 
 }
 
+// ----------------------------------------------------------------------------
+size_t _mywrite(int file, const void *ptr, size_t len) {
+// ----------------------------------------------------------------------------
+
+	if (isatty(file)) {
+
+		const uint8_t * buff = (uint8_t *)ptr;
+
+		for (size_t i = 0; i < len; i++) {
+
+			while ((LPUART_REG(LPUART_STAT) & LPUART_STAT_TRDE) == 0){;}
+
+			LPUART_REG(LPUART_DATA) = (char) buff[i];
+
+			if (buff[i] == '\n') {
+				while ((LPUART_REG(LPUART_STAT) & LPUART_STAT_TRDE) == 0){;}
+				LPUART_REG(LPUART_DATA) = '\r';
+			}
+		}
+
+	}
+
+	return -1;
+}
+
 // ------------------------------------------------------------------------
 int main (void) {
 
 	//volatile int w=0; while(1){w++;}
-	while(1) MZONE_YIELD();
+	//while(1) MZONE_YIELD();
 	//while(1) MZONE_WFI();
 
 	open("UART", 0, 0);
+	//LPUART_REG(LPUART_DATA) = 'S';
+	//while ((LPUART_REG(LPUART_STAT) & LPUART_STAT_TRDE) == 0){;}
+	//LPUART_REG(LPUART_DATA) = 'A';
+	//while ((LPUART_REG(LPUART_STAT) & LPUART_STAT_TRDE) == 0){;}
+	_mywrite(0,"=====================================================================\n",70);
+	_mywrite(0,"      	             Hex Five MultiZone® Security                    \n",70);
+	_mywrite(0,"    Copyright© 2020 Hex Five Security, Inc. - All Rights Reserved    \n",70);
+	_mywrite(0,"=====================================================================\n",70);
+
+	while(1) MZONE_YIELD();
+
 	STORE_NVICISER(UART_IRQn);
 
 	printf("\e[2J\e[H"); // clear terminal screen

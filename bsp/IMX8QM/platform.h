@@ -37,13 +37,10 @@
 ************************************************************************************/
 
 #define PERIPH_BASE                 (0x40000000UL)              /*!< AHB/ABP Peripherals                */
-#define APB1PERIPH_BASE             PERIPH_BASE
-#define APB2PERIPH_BASE             (PERIPH_BASE + 0x00010000UL)
-#define AHB1PERIPH_BASE             (PERIPH_BASE + 0x00020000U)
 
 
 /* Low Power Universal Asynchronous Receiver/Transmitter (LPUART) */
-#define LPUART_BASE                 (APB1PERIPH_BASE + 0x4800UL)
+#define LPUART_BASE                 (PERIPH_BASE + 0x1220000)
 #define LPUART_REG(offset)          _REG32(LPUART_BASE, offset)
 
 #define LPUART_VERID                (0x00)                      /*!< Version ID Register                */
@@ -87,6 +84,11 @@
 #define LPUART_CTRL_TE_MASK         (1 << 19)                   /*!< Transmitter Enable Mask            */
 #define LPUART_CTRL_TE_D            (0 << 19)                   /*!< Transmitter Enable - disable       */
 #define LPUART_CTRL_TE_E            (1 << 19)                   /*!< Transmitter Enable - enable        */
+
+#define LPUART_CTRL_RXFE            (1 << 3)
+#define LPUART_CTRL_TXFE            (1 << 7)
+#define LPUART_CTRL_RXFLUSH         (1 << 14)
+#define LPUART_CTRL_TXFLUSH         (1 << 15)
 
 #define LPUART_IRQn                 (00)
 
