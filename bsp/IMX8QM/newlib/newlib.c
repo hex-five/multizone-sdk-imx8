@@ -91,7 +91,6 @@ int _open(const char* name, int flags, int mode) {
 		/* Reset CTRL */
 		LPUART_REG(LPUART_CTRL) = 0;
 
-
 		/**/
 		LPUART_REG(LPUART_WATER) = 0;
 
