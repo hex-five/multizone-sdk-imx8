@@ -62,18 +62,6 @@ int _open(const char* name, int flags, int mode) {
 		uint32_t lpuart_verid = LPUART_REG(LPUART_VERID);
 		uint32_t temp = 0;
 
-		uint32_t lpuart_param = 0xdeaddead;
-		uint32_t lpuart_global = 0xdeaddead;
-		uint32_t lpuart_pincfg = 0xdeaddead;
-		uint32_t lpuart_baud = 0xdeaddead;
-		uint32_t lpuart_stat = 0xdeaddead;
-		uint32_t lpuart_ctrl = 0xdeaddead;
-		uint32_t lpuart_data = 0xdeaddead;
-		uint32_t lpuart_match = 0xdeaddead;
-		uint32_t lpuart_modir = 0xdeaddead;
-		uint32_t lpuart_fifo = 0xdeaddead;
-		uint32_t lpuart_water = 0xdeaddead;
-
 		if(lpuart_verid != LPUART_VERID_VAL) {
 			return -1;
 		}
@@ -103,35 +91,15 @@ int _open(const char* name, int flags, int mode) {
 		/* Clear all status flags */
 		LPUART_REG(LPUART_STAT) |= 0xc01fc000;
 
-		/* configure USART receiver */
-		//USART0_REG(USART_CTL0) &= ~(USART_CTL0_REN); 
-		//USART0_REG(USART_CTL0) |= (USART_CTL0_REN);
-
-		/* configure USART transmitter */
-		//USART0_REG(USART_CTL0) &= ~(USART_CTL0_TEN); 
-		//USART0_REG(USART_CTL0) |= (USART_CTL0_TEN);
-
 		temp = LPUART_REG(LPUART_CTRL);
-		/* enable USART */
+		/* Enable USART transmitter & receiver */
 		temp |= LPUART_CTRL_TE_E;
 		temp |= LPUART_CTRL_RE_E;
 		LPUART_REG(LPUART_CTRL) = temp;
 
-
 		/* enable USART interrupt */
 		//USART0_REG(USART_CTL0) |= (USART_CTL0_RBNEIE);
-
-		lpuart_param = LPUART_REG(LPUART_PARAM);
-		lpuart_global = LPUART_REG(LPUART_GLOBAL);
-		lpuart_pincfg = LPUART_REG(LPUART_PINCFG);
-		lpuart_baud = LPUART_REG(LPUART_BAUD);
-		lpuart_stat = LPUART_REG(LPUART_STAT);
-		lpuart_ctrl = LPUART_REG(LPUART_CTRL);
-		lpuart_data = LPUART_REG(LPUART_DATA);
-		lpuart_match = LPUART_REG(LPUART_MATCH);
-		lpuart_modir = LPUART_REG(LPUART_MODIR);
-		lpuart_fifo = LPUART_REG(LPUART_FIFO);
-		lpuart_water = LPUART_REG(LPUART_WATER);
+		LPUART_REG(LPUART_CTRL) |= LPUART_CTRL_RIE_E;
 
 		return 0;
 

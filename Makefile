@@ -8,7 +8,7 @@
 BOARD ?= IMX8QM
 ifeq ($(BOARD),IMX8QM)
 	ARM_ARCH := armv7e-m
-	ARM_CPU := cortex-m7
+	ARM_CPU := cortex-m4
 	ARM_FLOAT := soft
 	ARM_FPU := fpv5-sp-d16
 else 

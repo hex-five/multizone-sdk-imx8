@@ -84,13 +84,16 @@
 #define LPUART_CTRL_TE_MASK         (1 << 19)                   /*!< Transmitter Enable Mask            */
 #define LPUART_CTRL_TE_D            (0 << 19)                   /*!< Transmitter Enable - disable       */
 #define LPUART_CTRL_TE_E            (1 << 19)                   /*!< Transmitter Enable - enable        */
+#define LPUART_CTRL_RIE_MASK        (1 << 21)                   /*!< Receiver Interrupt Enable Mask     */
+#define LPUART_CTRL_RIE_D           (0 << 21)                   /*!< Receiver Interrupt Enable - disable*/
+#define LPUART_CTRL_RIE_E           (1 << 21)                   /*!< Receiver Interrupt Enable - enable */
 
 #define LPUART_CTRL_RXFE            (1 << 3)
 #define LPUART_CTRL_TXFE            (1 << 7)
 #define LPUART_CTRL_RXFLUSH         (1 << 14)
 #define LPUART_CTRL_TXFLUSH         (1 << 15)
 
-#define LPUART_IRQn                 (00)
+#define LPUART_IRQn                 (41)
 
 
 

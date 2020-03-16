@@ -524,33 +524,31 @@ int main (void) {
 	//while(1) MZONE_YIELD();
 	//while(1) MZONE_WFI();
 
+	uint32_t * mu_atr0 = (uint32_t *) 0x41480000;
+	uint32_t * mu_atr1 = (uint32_t *) 0x41480004;
+	uint32_t * mu_atr2 = (uint32_t *) 0x41480008;
+
+	*mu_atr0 = 0x05020301;
+	*mu_atr1 = 0x7f28155;
+	*mu_atr2 = 0x2011f;
+
+
 	open("UART", 0, 0);
-	//LPUART_REG(LPUART_DATA) = 'S';
-	//while ((LPUART_REG(LPUART_STAT) & LPUART_STAT_TRDE) == 0){;}
-	//LPUART_REG(LPUART_DATA) = 'A';
-	//while ((LPUART_REG(LPUART_STAT) & LPUART_STAT_TRDE) == 0){;}
-	_mywrite(0,"=====================================================================\n",70);
-	_mywrite(0,"      	             Hex Five MultiZone® Security                    \n",70);
-	_mywrite(0,"    Copyright© 2020 Hex Five Security, Inc. - All Rights Reserved    \n",70);
-	_mywrite(0,"=====================================================================\n",70);
-
-	while(1) MZONE_YIELD();
-
 	STORE_NVICISER(UART_IRQn);
 
-	printf("\e[2J\e[H"); // clear terminal screen
-	printf("=====================================================================\n");
-	printf("      	             Hex Five MultiZone® Security                    \n");
-	printf("    Copyright© 2020 Hex Five Security, Inc. - All Rights Reserved    \n");
-	printf("=====================================================================\n");
-	printf("This version of MultiZone® Security is meant for evaluation purposes \n");
-	printf("only. As such, use of this software is governed by the Evaluation    \n");
-	printf("License. There may be other functional limitations as described in   \n");
-	printf("the evaluation SDK documentation. The commercial version of the      \n");
-	printf("software does not have these restrictions.                           \n");
-	printf("=====================================================================\n");
+	write(1,"\e[2J\e[H",7); // clear terminal screen
+	write(1,"=====================================================================\n",70);
+	write(1,"      	             Hex Five MultiZone® Security                     \n",71);
+	write(1,"    Copyright© 2020 Hex Five Security, Inc. - All Rights Reserved    \n",71);
+	write(1,"=====================================================================\n",70);
+	write(1,"This version of MultiZone® Security is meant for evaluation purposes \n",71);
+	write(1,"only. As such, use of this software is governed by the Evaluation    \n",70);
+	write(1,"License. There may be other functional limitations as described in   \n",70);
+	write(1,"the evaluation SDK documentation. The commercial version of the      \n",70);
+	write(1,"software does not have these restrictions.                           \n",70);
+	write(1,"=====================================================================\n",70);
 
-    print_cpu_info();
+    //print_cpu_info();
 
 	write(1, "\n\rZ1 > ", 7);
 

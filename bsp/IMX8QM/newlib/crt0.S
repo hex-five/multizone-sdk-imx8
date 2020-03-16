@@ -40,11 +40,13 @@ __isr_vector:
         .word   0                  	// Not Defined
         .word   pendsv_handler     	// PendSV_Handler
         .word   systick_handler    	// SysTick_Handler
-        .rept   39                  // Repeat for 
+        .rept   25                  // Repeat for 
         .word   _def_handler        // IRQ0_Handler to IRQ39_Handler 
         .endr
 		.word	uart_handler
-        .word   btn_handler
+        .rept   25                  // Repeat for 
+        .word   _def_handler        // 
+        .endr
 	.size	__isr_vector, . - __isr_vector
 
 # -------------------------------------------------------------
