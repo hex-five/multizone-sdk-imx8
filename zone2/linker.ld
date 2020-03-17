@@ -6,7 +6,7 @@ ENTRY( reset_handler )
 MEMORY {
   flash (rxai!w) : ORIGIN = flash + 0x08000, LENGTH = 32K
   itcm  (rxai!w) : ORIGIN = itcm  + 0x08000, LENGTH = 32K
-  dtcm  (wxa!ri) : ORIGIN = dtcm  + 0x01000, LENGTH =  4K
+  dtcm  (wxa!ri) : ORIGIN = dtcm  + 0x02000, LENGTH =  4K
 }
 
 __end_stack = _sp; 

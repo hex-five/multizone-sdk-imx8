@@ -383,7 +383,7 @@ void cmd_handler(){
 	else if (strcmp(tk1, "mpu")==0) print_mpu();
 	// --------------------------------------------------------------------
 
-	else printf("Commands: yield send recv mpu load store exec stats timer restart \n");
+	else write(1, "Commands: yield send recv mpu load store exec stats timer restart \n", 70);
 
 }
 
@@ -492,30 +492,7 @@ int readline() {
 
 }
 
-// ----------------------------------------------------------------------------
-size_t _mywrite(int file, const void *ptr, size_t len) {
-// ----------------------------------------------------------------------------
 
-	if (isatty(file)) {
-
-		const uint8_t * buff = (uint8_t *)ptr;
-
-		for (size_t i = 0; i < len; i++) {
-
-			while ((LPUART_REG(LPUART_STAT) & LPUART_STAT_TRDE) == 0){;}
-
-			LPUART_REG(LPUART_DATA) = (char) buff[i];
-
-			if (buff[i] == '\n') {
-				while ((LPUART_REG(LPUART_STAT) & LPUART_STAT_TRDE) == 0){;}
-				LPUART_REG(LPUART_DATA) = '\r';
-			}
-		}
-
-	}
-
-	return -1;
-}
 
 // ------------------------------------------------------------------------
 int main (void) {

@@ -113,6 +113,17 @@ int _read(int file, char *ptr, size_t len) {
 // ----------------------------------------------------------------------------
 	if (isatty(file)) {
 
+		ssize_t count = 0;
+		int rxfifo = -1;
+
+		while( count<len && (LPUART_REG(LPUART_STAT) & LPUART_STAT_RDRF) ){
+			rxfifo = LPUART_REG(LPUART_DATA);
+			*ptr++ = (char)rxfifo;
+			count++;
+		}
+
+		return count;
+
 	}
 	return -1;
 }

@@ -38,7 +38,7 @@
 {																							\
 }
 
-#define UART_IRQ_RX()		0
+#define UART_IRQ_RX()		(LPUART_REG(LPUART_STAT) & LPUART_STAT_RDRF)
 
 
 #endif
