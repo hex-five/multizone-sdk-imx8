@@ -145,7 +145,13 @@ int main (void) {
 	*mu_atr3 = 0x0;
 
 
-	/* */
+	/* Power on Local LPUART for M4. */
+	*mu_atr0 = 0x03020201;
+	*mu_atr1 = 0x3011f;
+	for(volatile int i=0; i<100; i++);
+
+
+	/* Set clock Frequncy of Local LPUART for M4. */
 	*mu_atr0 = 0x05020301;
 	*mu_atr1 = 0x7f28155;
 	*mu_atr2 = 0x2011f;
