@@ -121,10 +121,31 @@ int main (void) {
 	/* Disable Watchdog */
 	//uint32_t * cm4_wdog_cnt = 0xAAAA
 
-	/* */
+	/* Open IPC Channel */
+	/* Clear GIEn, RIEn, TIEn, GIRn and ABFn. */ 
+	uint32_t * mu_acr = (uint32_t *) 0x41480024;
+	*mu_acr = 0x0;
+
+	/* Configures pin routing */
 	uint32_t * mu_atr0 = (uint32_t *) 0x41480000;
 	uint32_t * mu_atr1 = (uint32_t *) 0x41480004;
 	uint32_t * mu_atr2 = (uint32_t *) 0x41480008;
+	uint32_t * mu_atr3 = (uint32_t *) 0x4148000C;
+	/* BOARD_INITPINS_FTDI_M40_UART0_RX_PIN_FUNCTION_ID */
+	*mu_atr0 = 0x05060401;
+	*mu_atr1 = 0x0;
+	*mu_atr2 = 0x10007;
+	*mu_atr3 = 0x0;
+	/* Spend some time */
+	for(volatile int i=0; i<100; i++);
+	/* Pad 2 */
+	*mu_atr0 = 0x05060401;
+	*mu_atr1 = 0x0;
+	*mu_atr2 = 0x10008;
+	*mu_atr3 = 0x0;
+
+
+	/* */
 	*mu_atr0 = 0x05020301;
 	*mu_atr1 = 0x7f28155;
 	*mu_atr2 = 0x2011f;
