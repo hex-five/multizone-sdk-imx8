@@ -43,7 +43,6 @@ void uart_handler(void){
 
 void print_cpu_info(void) {
 
-
 	/* SCB->CPUID Special register access (read-only) */
 	uint32_t cpuid = LOAD_SCB(SCS_SCB_CPUID);			// mzone api
 	//uint32_t cpuid = *(volatile uint32_t *)SCB_CPUID;	// trap&emul
@@ -102,12 +101,58 @@ void print_stats(void){
 
 void print_mpu(void){
 
+
+	/* RBAR|RASR Masks */
+	#define RBAR_ADDR	 		0xFFFFFFE0
+	#define RBAR_REGION	 		0xF
+	#define RASR_AP_XN	 		0x17000000 	//clear mask
+	#define RASR_AP_XN_NA 	 	0x11000000 	//---  
+	#define RASR_AP_XN_R 	 	0x12000000 	//r-- 
+	#define RASR_AP_XN_X 	 	0x01000000 	//--x 
+	#define RASR_AP_XN_RW 	 	0x13000000 	//rw- 
+	#define RASR_AP_XN_RX 	 	0x02000000 	//r-x 
+	#define RASR_AP_XN_RWX 	 	0x03000000 	//rwx
+	#define RASR_SIZE	 		0x3E
+
+
+	uint32_t mpu_config[MPU_REGIONS*2];
+
+	/* SCB->MPU_TYPE Special register access (read-only) */
+	uint32_t mpu_regions = *(volatile uint32_t *)MPU_TYPE;
+	mpu_regions = ((mpu_regions & 0x0000FF00) >> 8);
+
+	for(int i=0, j=0; i<mpu_regions; i++, j=j+2)
+	{
+		mpu_config[j] = LOAD_MPURBAR(i);
+		mpu_config[j+1] = LOAD_MPURASR(i);
+	}
+
+	printf("\n");
+	for(int i=0; i<(16); i+=2)
+	{
+		uint8_t  region_n = (mpu_config[i] & RBAR_REGION);
+		uint32_t start = (mpu_config[i] & RBAR_ADDR);
+		uint32_t end = ((mpu_config[i+1] & RASR_SIZE) >> 1);
+		char *rwx = ((end) ==  0)  ? "---" : \
+				((mpu_config[i+1] & RASR_AP_XN) ==  RASR_AP_XN_NA)  ? "---" : \
+			    	((mpu_config[i+1] & RASR_AP_XN) ==  RASR_AP_XN_R)   ? "r--" : \
+			    	((mpu_config[i+1] & RASR_AP_XN) ==  RASR_AP_XN_X)   ? "--x" : \
+			    	((mpu_config[i+1] & RASR_AP_XN) ==  RASR_AP_XN_RW)  ? "rw-" : \
+			    	((mpu_config[i+1] & RASR_AP_XN) ==  RASR_AP_XN_RX)  ? "r-x" : \
+			    	((mpu_config[i+1] & RASR_AP_XN) ==  RASR_AP_XN_RWX) ? "rwx" : "ERR";
+		uint32_t size = (1 << (end+1));
+
+		if(size < 32) size =0;
+		else end = (size + start) - 1;
+
+		if(end != 0x0)
+			printf("0x%08X 0x%08X %s \n", start, end, rwx);
+	}
 }
 
 
 void cmd_handler(){
 
-/*
 	char * tk1 = strtok (inputline, " ");
 	char * tk2 = strtok (NULL, " ");
 	char * tk3 = strtok (NULL, " ");
@@ -203,17 +248,17 @@ void cmd_handler(){
 	// --------------------------------------------------------------------
 
 	else printf("Commands: yield send recv mpu load store exec stats timer restart \n");
-*/
+
 }
 
 
 int readline() {
 
-/*
+
 	static int p=0;
 	static int esc=0;
 	static char history[8][sizeof(inputline)]={"","","","","","","",""}; static int h=-1;
-
+	
 	while ( buffer.p1>buffer.p0 || esc!=0 ) {
 		if(buffer.p1>buffer.p0) {
 			const char c = buffer.data[buffer.p0++];
@@ -306,7 +351,7 @@ int readline() {
 			} else esc=0;
 		}
 	}
-*/
+
 	return 0;
 
 }
@@ -320,9 +365,6 @@ int main (void) {
 	//volatile int w=0; while(1){w++;}
 	//while(1) MZONE_YIELD();
 	//while(1) MZONE_WFI();
-
-	/* Disable Watchdog */
-	//uint32_t * cm4_wdog_cnt = 0xAAAA
 
 	/* Open IPC Channel */
 	/* Clear GIEn, RIEn, TIEn, GIRn and ABFn. */ 
