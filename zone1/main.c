@@ -45,9 +45,8 @@ void print_cpu_info(void) {
 
 
 	/* SCB->CPUID Special register access (read-only) */
-	//uint32_t cpuid = LOAD_SCB(SCS_SCB_CPUID);			// mzone api
+	uint32_t cpuid = LOAD_SCB(SCS_SCB_CPUID);			// mzone api
 	//uint32_t cpuid = *(volatile uint32_t *)SCB_CPUID;	// trap&emul
-	uint32_t cpuid = 0x410FC241;
 
 	/* Decoding SCB->CPUID */
 	uint16_t partno = (cpuid&0xfff0)>>4;
@@ -125,6 +124,7 @@ int main (void) {
 	/* Clear GIEn, RIEn, TIEn, GIRn and ABFn. */ 
 	uint32_t * mu_acr = (uint32_t *) 0x41480024;
 	*mu_acr = 0x0;
+	for(volatile int i=0; i<100; i++);
 
 	/* Configures pin routing */
 	uint32_t * mu_atr0 = (uint32_t *) 0x41480000;
@@ -157,7 +157,9 @@ int main (void) {
 	*mu_atr2 = 0x2011f;
 
 	open("UART", 0, 0);
-	//STORE_NVICISER(UART_IRQn);
+	STORE_NVICISER(UART_IRQn);
+
+	//LPUART_REG(LPUART_DATA) = 'H';
 
 	printf("\e[2J\e[H"); // clear terminal screen
 	printf("=====================================================================\n");
@@ -172,11 +174,8 @@ int main (void) {
 	printf("=====================================================================\n");
 
     print_cpu_info();
-	//uint32_t cpuid = LOAD_SCB(SCS_SCB_CPUID);
 
 	write(1, "\n\rZ1 > ", 7);
-
-	while(1);
 
     while(1){
 
@@ -188,8 +187,8 @@ int main (void) {
 
 		msg_handler();
 
-		//MZONE_YIELD();
-		MZONE_WFI();
+		MZONE_YIELD();
+		//MZONE_WFI();
 
 	}
 

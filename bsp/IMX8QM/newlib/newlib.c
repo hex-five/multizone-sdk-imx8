@@ -58,7 +58,7 @@ int _open(const char* name, int flags, int mode) {
 
 	if (strcmp(name, "UART")==0){
 
-#if 0
+
 		/* Check UART ID */
 		uint32_t lpuart_verid = LPUART_REG(LPUART_VERID);
 		uint32_t temp = 0;
@@ -101,7 +101,7 @@ int _open(const char* name, int flags, int mode) {
 		/* enable USART interrupt */
 		//USART0_REG(USART_CTL0) |= (USART_CTL0_RBNEIE);
 		LPUART_REG(LPUART_CTRL) |= LPUART_CTRL_RIE_E;
-#endif
+
 		return 0;
 
 	}
@@ -134,7 +134,7 @@ size_t _write(int file, const void *ptr, size_t len) {
 // ----------------------------------------------------------------------------
 
 	if (isatty(file)) {
-/*
+#if 0
 		const uint8_t * buff = (uint8_t *)ptr;
 
 		for (size_t i = 0; i < len; i++) {
@@ -148,7 +148,8 @@ size_t _write(int file, const void *ptr, size_t len) {
 				LPUART_REG(LPUART_DATA) = '\r';
 			}
 		}
-*/
+#endif
+
 	}
 
 	return -1;
