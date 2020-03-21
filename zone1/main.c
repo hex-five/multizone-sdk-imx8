@@ -95,14 +95,218 @@ void msg_handler() {
 
 }
 
-
-void cmd_handler(){
+void print_stats(void){
 
 }
 
 
-char readline(){
+void print_mpu(void){
 
+}
+
+
+void cmd_handler(){
+
+/*
+	char * tk1 = strtok (inputline, " ");
+	char * tk2 = strtok (NULL, " ");
+	char * tk3 = strtok (NULL, " ");
+
+	if (tk1 == NULL) tk1 = "help";
+
+	// --------------------------------------------------------------------
+	if (strcmp(tk1, "load")==0){
+	// --------------------------------------------------------------------
+		if (tk2 != NULL){
+			uint8_t data = 0x00;
+			const unsigned long addr = strtoull(tk2, NULL, 16);
+			__asm volatile ("ldrb %0, [%1]" : "+r"(data) : "r"(addr));
+			printf("0x%08x : 0x%02x \n", (unsigned int)addr, data);
+		} else printf("Syntax: load address \n");
+
+	// --------------------------------------------------------------------
+	} else if (strcmp(tk1, "store")==0){
+	// --------------------------------------------------------------------
+		if (tk2 != NULL && tk3 != NULL){
+			const uint32_t data = (uint32_t)strtoul(tk3, NULL, 16);
+			const unsigned long addr = strtoull(tk2, NULL, 16);
+
+			if ( strlen(tk3) <=2 )
+				__asm volatile ("strb %0, [%1]" : : "r"(data), "r"(addr));
+			else if ( strlen(tk3) <=4 )
+				__asm volatile ("strh %0, [%1]" : : "r"(data), "r"(addr));
+			else
+				__asm volatile ("str %0, [%1]" : : "r"(data), "r"(addr));
+			
+			printf("0x%08x : 0x%02x \n", (unsigned int)addr, (unsigned int)data);
+		} else printf("Syntax: store address data \n");
+
+	// --------------------------------------------------------------------
+	} else if (strcmp(tk1, "exec")==0){
+	// --------------------------------------------------------------------
+		if (tk2 != NULL){
+			const unsigned long addr = strtoull(tk2, NULL, 16);
+			__asm volatile( "bx %0" : : "r"(addr));
+		} else printf("Syntax: exec address \n");
+
+	// --------------------------------------------------------------------
+	} else if (strcmp(tk1, "send")==0){
+	// --------------------------------------------------------------------
+		if (tk2 != NULL && tk2[0]>='1' && tk2[0]<='4' && tk3 != NULL){
+			char msg[16]; strncpy(msg, tk3, 16);
+			if (!MZONE_SEND( tk2[0]-'0', msg) )
+				printf("Error: Inbox full.\n");
+		} else printf("Syntax: send {1|2|3|4} message \n");
+
+	// --------------------------------------------------------------------
+	} else if (strcmp(tk1, "recv")==0){
+	// --------------------------------------------------------------------
+		if (tk2 != NULL && tk2[0]>='1' && tk2[0]<='4'){
+			char msg[16];
+			if (MZONE_RECV(tk2[0]-'0', msg))
+				printf("msg : %.16s\n", msg);
+			else
+				printf("Error: Inbox empty.\n");
+		} else printf("Syntax: recv {1|2|3|4} \n");
+
+	// --------------------------------------------------------------------
+	} else if (strcmp(tk1, "yield")==0){
+	// --------------------------------------------------------------------
+		const unsigned long C1 = MZONE_RDCYCCNT();
+		MZONE_YIELD();
+		const unsigned long C2 = MZONE_RDCYCCNT();
+		const int TC = (C2-C1)/(CPU_FREQ/1000000);
+		printf( (TC>0 ? "yield : elapsed time %dus \n" : "yield : n/a \n"), TC);
+
+	// --------------------------------------------------------------------
+	} else if (strcmp(tk1, "timer")==0){
+	// --------------------------------------------------------------------
+		if (tk2 != NULL){
+			const uint64_t ms = abs(strtoull(tk2, NULL, 10));
+			const uint64_t T0 = MZONE_RDTIME();
+			const uint64_t T1 = T0 + (RTC_FREQ*(ms/1000.0));
+			MZONE_WRTIMECMP(T1);
+		
+			printf("timer set to T0=%lu ms, T1=%lu ms\n", (unsigned long)(T0*1000.0/RTC_FREQ), (unsigned long)(T0*1000.0/RTC_FREQ)+ms);
+		} else printf("Syntax: timer ms \n");
+
+	// --------------------------------------------------------------------
+	} else if (strcmp(tk1, "stats")==0)	print_stats();
+	// --------------------------------------------------------------------
+
+	// --------------------------------------------------------------------
+	else if (strcmp(tk1, "restart")==0) __asm volatile ("b reset_handler");
+	// --------------------------------------------------------------------
+
+	// --------------------------------------------------------------------
+	else if (strcmp(tk1, "mpu")==0) print_mpu();
+	// --------------------------------------------------------------------
+
+	else printf("Commands: yield send recv mpu load store exec stats timer restart \n");
+*/
+}
+
+
+int readline() {
+
+/*
+	static int p=0;
+	static int esc=0;
+	static char history[8][sizeof(inputline)]={"","","","","","","",""}; static int h=-1;
+
+	while ( buffer.p1>buffer.p0 || esc!=0 ) {
+		if(buffer.p1>buffer.p0) {
+			const char c = buffer.data[buffer.p0++];
+
+			if (c=='\e'){
+				esc=1;
+
+			} else if (esc==1 && c=='['){
+				esc=2;
+
+			} else if (esc==2 && c=='3'){
+				esc=3;
+
+			} else if (esc==3 && c=='~'){ // del key
+				for (int i=p; i<strlen(inputline); i++) inputline[i]=inputline[i+1];
+				write(1, "\e7", 2); // save curs pos
+				write(1, "\e[K", 3); // clear line from curs pos
+				write(1, &inputline[p], strlen(inputline)-p);
+				write(1, "\e8", 2); // restore curs pos
+				esc=0;
+
+			} else if (esc==2 && c=='C'){ // right arrow
+				esc=0;
+				if (p < strlen(inputline)){
+					p++;
+					write(1, "\e[C", 3);
+				}
+
+			} else if (esc==2 && c=='D'){ // left arrow
+				esc=0;
+				if (p>0){
+					p--;
+					write(1, "\e[D", 3);
+				}
+
+			} else if (esc==2 && c=='A'){ // up arrow (history)
+				esc=0;
+				if (h<8-1 && strlen(history[h+1])>0){
+					h++;
+					strcpy(inputline, history[h]);
+					write(1, "\e[2K", 4); // 2K clear entire line - cur pos dosn't change
+					write(1, "\rZ1 > ", 6);
+					write(1, inputline, strlen(inputline));
+					p=strlen(inputline);
+
+				}
+
+			} else if (esc==2 && c=='B'){ // down arrow (history)
+				esc=0;
+				if (h>0 && strlen(history[h-1])>0){
+					h--;
+					strcpy(inputline, history[h]);
+					write(1, "\e[2K", 4); // 2K clear entire line - cur pos dosn't change
+					write(1, "\rZ1 > ", 6);
+					write(1, inputline, strlen(inputline));
+					p=strlen(inputline);
+				}
+
+			} else if ((c=='\b' || c=='\x7f') && p>0 && esc==0){ // backspace
+				p--;
+				for (int i=p; i<strlen(inputline); i++) inputline[i]=inputline[i+1];
+				write(1, "\e[D", 3);
+				write(1, "\e7", 2);
+				write(1, "\e[K", 3);
+				write(1, &inputline[p], strlen(inputline)-p);
+				write(1, "\e8", 2);
+
+			} else if (c>=' ' && c<='~' && p < sizeof(inputline)-1 && esc==0){
+				for (int i = sizeof(inputline)-1-1; i > p; i--) inputline[i]=inputline[i-1]; // make room for 1 ch
+				inputline[p]=c;
+				write(1, "\e7", 2); // save curs pos
+				write(1, "\e[K", 3); // clear line from curs pos
+				write(1, &inputline[p], strlen(inputline)-p); p++;
+				write(1, "\e8", 2); // restore curs pos
+				write(1, "\e[C", 3); // move curs right 1 pos
+
+			} else if (c=='\r') {
+				p=0; esc=0;
+				write(1, "\n", 1);
+				for (int i = sizeof(inputline)-1; i > 0; i--) if (inputline[i]==' ') inputline[i]='\0'; else break;
+
+				if (strlen(inputline)>0 && strcmp(inputline, history[0])!=0){
+					for (int i = 8-1; i > 0; i--) strcpy(history[i], history[i-1]);
+					strcpy(history[0], inputline);
+				}
+				h = -1;
+
+				return 1;
+
+			} else esc=0;
+		}
+	}
+*/
 	return 0;
 
 }
@@ -234,9 +438,7 @@ int main (void) {
 	mu_arr1_val = *mu_arr1;		// should read XXXXXX
 
 	open("UART", 0, 0);
-	//STORE_NVICISER(UART_IRQn);
-
-	//LPUART_REG(LPUART_DATA) = 'H';
+	STORE_NVICISER(UART_IRQn);
 
 	printf("\e[2J\e[H"); // clear terminal screen
 	printf("=====================================================================\n");
@@ -253,7 +455,6 @@ int main (void) {
     print_cpu_info();
 
 	write(1, "\n\rZ1 > ", 7);
-	while(1);
 
     while(1){
 
