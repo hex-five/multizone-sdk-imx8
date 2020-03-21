@@ -134,7 +134,7 @@ size_t _write(int file, const void *ptr, size_t len) {
 // ----------------------------------------------------------------------------
 
 	if (isatty(file)) {
-#if 0
+
 		const uint8_t * buff = (uint8_t *)ptr;
 
 		for (size_t i = 0; i < len; i++) {
@@ -148,7 +148,6 @@ size_t _write(int file, const void *ptr, size_t len) {
 				LPUART_REG(LPUART_DATA) = '\r';
 			}
 		}
-#endif
 
 	}
 
