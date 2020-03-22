@@ -28,6 +28,86 @@ static char inputline[32+1]="";
 #define MSG_SIZE 4
 
 
+// ------------------------------------------------------------------------
+void hardfault_handler(void) __attribute__ ((interrupt ("irq"))); 
+void hardfault_handler(void){
+// ------------------------------------------------------------------------
+
+	register uint32_t *sp __asm ("sp");
+
+	const uint32_t pc = *(sp+10);
+
+	printf("Hard fault : 0x%08x \n", pc);
+
+	printf("Press any key to restart ... \n");
+	char c='\0'; while(read(0, &c, 1) ==0 ){;} __asm volatile("b reset_handler");
+
+}
+
+// ------------------------------------------------------------------------
+void memmanage_handler(void) __attribute__ ((interrupt ("irq"))); 
+void memmanage_handler(void){
+// ------------------------------------------------------------------------
+
+	register uint32_t *sp __asm ("sp");
+
+	uint32_t pc = *(sp+10);
+
+	printf("Memory protection fault : 0x%08x \n", pc);
+
+	printf("Press any key to restart ... \n");
+	char c='\0'; while(read(0, &c, 1) ==0 ){;} __asm volatile("b reset_handler");
+
+}
+
+// ------------------------------------------------------------------------
+void busfault_handler(void) __attribute__ ((interrupt ("irq"))); 
+void busfault_handler(void){
+// ------------------------------------------------------------------------
+
+	register uint32_t *sp __asm ("sp");
+
+	const uint32_t pc = *(sp+10);
+
+	printf("Bus fault : 0x%08x \n", pc);
+
+	printf("Press any key to restart ... \n");
+	char c='\0'; while(read(0, &c, 1) ==0 ){;} __asm volatile("b reset_handler");
+
+}
+
+void usagefault_handler(void) __attribute__ ((interrupt ("irq"))); 
+void usagefault_handler(void){
+
+	register uint32_t *sp __asm ("sp");
+
+	const uint32_t pc = *(sp+10);
+
+	printf("Usage fault : 0x%08x \n", pc);
+
+	printf("Press any key to restart ... \n");
+	char c='\0'; while(read(0, &c, 1) ==0 ){;} __asm volatile("b reset_handler");
+
+}
+
+void systick_handler(void) __attribute__ ((interrupt ("irq"))); 
+void systick_handler(void){
+
+	const uint64_t T = MZONE_RDTIME();
+
+	write(1, "\e7", 2); 	// save curs pos
+	write(1, "\e[r", 3); 	// scroll all screen
+	write(1, "\e[2M", 4); 	// scroll up up
+	write(1, "\e8", 2);   	// restore curs pos
+	write(1, "\e[2A", 4); 	// curs up 2 lines
+	write(1, "\e[2L", 4); 	// insert 2 lines
+
+	printf("\rZ1 > timer expired : %lu!\n", (uint32_t)(T*(1000.0/RTC_FREQ)));
+
+	write(1, "\e8", 2);   	// restore curs pos
+
+}
+
 
 void uart_handler(void) __attribute__ ((interrupt ("irq"))); 
 void uart_handler(void){
@@ -70,31 +150,61 @@ int cmpfunc(const void* a , const void* b){
 }
 
 
-void msg_handler() {
+void print_stats(void){
 
-	// Message handler
-	for (int zone=2; zone<=4; zone++){
+	const int COUNT = 10+1; // odd values for median
+	#define MHZ (CPU_FREQ/1000000)
 
-		char msg[16];
+	int cycles[COUNT], instrs[COUNT];
 
-		if (MZONE_RECV(zone, msg)) {
+	for (int i=0; i<COUNT; i++){	
+		
+		volatile unsigned int C1 = MZONE_RDCYCCNT();
+		MZONE_YIELD();
+		volatile unsigned int C2 = MZONE_RDCYCCNT();
 
-			if (strcmp("ping", msg) == 0)
-				MZONE_SEND(zone, "pong");
-
-			else {
-				write(1, "\e7\e[2K", 6);   // save curs pos & clear entire line
-				printf("\rZ%d > %.16s\n", zone, msg);
-				write(1, "\nZ1 > %s", 6); write(1, inputline, strlen(inputline));
-				write(1, "\e8\e[2B", 6);   // restore curs pos & curs down 2x
-			}
-		}
-
+		cycles[i] = C2-C1; instrs[i] = cycles[i]>>1;
 	}
 
-}
+	int max_cycle = 0;
+	for (int i=0; i<COUNT; i++)	max_cycle = (cycles[i] > max_cycle ? cycles[i] : max_cycle);
+	char str[16]; sprintf(str, "%lu", max_cycle); const int col_len = strlen(str);
 
-void print_stats(void){
+
+	for (int i=0; i<COUNT; i++)
+		printf("%*d instr %*d cycles %*d us \n", col_len, instrs[i], col_len, cycles[i], col_len-1, cycles[i]/MHZ);
+
+	qsort(cycles, COUNT, sizeof(int), cmpfunc);
+	qsort(instrs, COUNT, sizeof(int), cmpfunc);
+
+	printf("-----------------------------------------\n");
+	int min = instrs[0], med = instrs[COUNT/2], max = instrs[COUNT-1];
+	printf("instrs  min/med/max = %d/%d/%d \n", min, med, max);
+		min = cycles[0], med = cycles[COUNT/2], max = cycles[COUNT-1];
+	printf("cycles  min/med/max = %d/%d/%d \n", min, med, max);
+	printf("time    min/med/max = %d/%d/%d us \n", min/MHZ, med/MHZ, max/MHZ);
+
+	const unsigned int k_cycles  = MZONE_RDKCYCCNT();
+	const unsigned int k_instr   = MZONE_RDKINSTR();
+	const unsigned int irq_instr = 0;
+	const unsigned int irq_cycle = 0;
+
+	// Kernel stats - may not be available (#ifdef STATS)
+	if (k_cycles>0){
+		const unsigned int irq_instr = MZONE_RDKINSTR_IRQ();
+		const unsigned int irq_cycle = MZONE_RDKCYCCNT_IRQ();
+
+		printf("\n");
+		printf("Kernel\n");
+		printf("-----------------------------------------\n");
+		printf("instrs = %lu \n", k_instr);
+		printf("cycles = %lu \n", k_cycles);
+		printf("time   = %lu us\n", k_cycles/MHZ);
+		printf("-----------------------------------------\n");
+		printf("irq lat instrs = %lu \n", irq_instr);
+		printf("irq lat cycles = %lu \n", irq_cycle);
+		printf("time           = %lu us\n", irq_cycle/MHZ);
+	}
 
 }
 
@@ -148,6 +258,31 @@ void print_mpu(void){
 		if(end != 0x0)
 			printf("0x%08X 0x%08X %s \n", start, end, rwx);
 	}
+}
+
+
+void msg_handler() {
+
+	// Message handler
+	for (int zone=2; zone<=4; zone++){
+
+		char msg[16];
+
+		if (MZONE_RECV(zone, msg)) {
+
+			if (strcmp("ping", msg) == 0)
+				MZONE_SEND(zone, "pong");
+
+			else {
+				write(1, "\e7\e[2K", 6);   // save curs pos & clear entire line
+				printf("\rZ%d > %.16s\n", zone, msg);
+				write(1, "\nZ1 > %s", 6); write(1, inputline, strlen(inputline));
+				write(1, "\e8\e[2B", 6);   // restore curs pos & curs down 2x
+			}
+		}
+
+	}
+
 }
 
 
@@ -254,11 +389,10 @@ void cmd_handler(){
 
 int readline() {
 
-
 	static int p=0;
 	static int esc=0;
 	static char history[8][sizeof(inputline)]={"","","","","","","",""}; static int h=-1;
-	
+
 	while ( buffer.p1>buffer.p0 || esc!=0 ) {
 		if(buffer.p1>buffer.p0) {
 			const char c = buffer.data[buffer.p0++];
@@ -355,8 +489,6 @@ int readline() {
 	return 0;
 
 }
-
-
 
 
 // ------------------------------------------------------------------------
