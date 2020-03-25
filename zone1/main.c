@@ -640,8 +640,8 @@ int main (void) {
 
 		msg_handler();
 
-		MZONE_YIELD();
-		//MZONE_WFI();
+		//MZONE_YIELD();
+		MZONE_WFI();
 
 	}
 

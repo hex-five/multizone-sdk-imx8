@@ -30,8 +30,8 @@ int main (void) {
 		}
 
 		// Wait For Interrupt
-		MZONE_YIELD();
-		//MZONE_WFI();
+		//MZONE_YIELD();
+		MZONE_WFI();
 
 	}
 
