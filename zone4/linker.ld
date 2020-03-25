@@ -4,9 +4,9 @@ OUTPUT_FORMAT("elf32-littlearm", "elf32-bigarm", "elf32-littlearm")
 ENTRY( reset_handler )
 
 MEMORY {
-  flash (rxai!w) : ORIGIN = flash + 0x18000, LENGTH = 32K
-  itcm  (rxai!w) : ORIGIN = itcm  + 0x18000, LENGTH = 32K
-  dtcm  (wxa!ri) : ORIGIN = dtcm  + 0x04000, LENGTH =  4K
+  flash (rxai!w) : ORIGIN = flash + 0x14000, LENGTH = 8K
+  itcm  (rxai!w) : ORIGIN = itcm  + 0x14000, LENGTH = 8K
+  dtcm  (wxa!ri) : ORIGIN = dtcm  + 0x04000, LENGTH = 4K
 }
 
 __end_stack = _sp; 

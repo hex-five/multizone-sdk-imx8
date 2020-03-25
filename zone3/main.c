@@ -13,7 +13,7 @@ int main (void) {
 // ------------------------------------------------------------------------
 
 	//volatile int w=0; while(1){w++;}
-	while(1) MZONE_YIELD();
+	//while(1) MZONE_YIELD();
 	//while(1) MZONE_WFI();
 
 	int i = 0;
@@ -30,7 +30,8 @@ int main (void) {
 		}
 
 		// Wait For Interrupt
-		MZONE_WFI();
+		MZONE_YIELD();
+		//MZONE_WFI();
 
 	}
 
