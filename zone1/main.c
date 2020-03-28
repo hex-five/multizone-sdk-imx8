@@ -593,7 +593,7 @@ int main (void) {
 	mu_arr0_val = 0xDEADDEAD;
 	mu_arr0_val = *mu_arr0;		// should read 0x10101
 
-	/* Set clock Frequncy of Local LPUART for M4. */
+	/* Set clock Frequency of Local LPUART for M4. */
 	while(!((*mu_asr)&(1<<23))){
 	} 
 	*mu_atr0 = 0x05020301;
