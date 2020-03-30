@@ -138,6 +138,8 @@ void print_cpu_info(void) {
 	printf("Variant        : 0x%X, Revision %d.\n", ((cpuid&0x00ffffff)>>20),((cpuid&0x00ffffff)>>20));
 	printf("PartNo         : 0x%X, %s", partno, partno_str);
 	printf("Revision       : 0x%X, Patch %d.\n", ((cpuid&0x7)),((cpuid&0x7)));
+	printf("CPU clock      : %d MHz \n", (int)(CPU_FREQ/1E+6) );
+	printf("Platform       : i.MX8QM \n");
 
 }
 
