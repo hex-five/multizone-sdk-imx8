@@ -63,6 +63,7 @@ all: clean
 	zone3/zone3.elf \
 	zone4/zone4.elf
 	$(OBJCOPY) -S -Iihex -Obinary multizone.hex multizone.bin
+	cp multizone.bin m4_image.bin	
 
 
 .PHONY: clean
@@ -71,5 +72,5 @@ clean:
 	$(MAKE) -C zone2 clean
 	$(MAKE) -C zone3 clean
 	$(MAKE) -C zone4 clean
-	rm -f multizone.hex multizone.bin
+	rm -f multizone.hex multizone.bin m4_image.bin
 	
