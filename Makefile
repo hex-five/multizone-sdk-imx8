@@ -54,6 +54,7 @@ all: clean
 	$(MAKE) -C zone3
 	$(MAKE) -C zone4
 	java -jar multizone.jar \
+	-v \
 	-k ../hexfive-kern-arm/build/$(BOARD)/kernel.hex \
 	-a $(BOARD) \
 	-c bsp/$(BOARD)/multizone.cfg \
