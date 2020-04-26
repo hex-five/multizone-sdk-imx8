@@ -64,7 +64,7 @@ all: clean
 	zone4/zone4.elf
 	$(OBJCOPY) -S -Iihex -Obinary multizone.hex multizone.bin
 	cp multizone.bin ./tools/m4_image.bin
-	./tools/mkimage_imx8 -soc QM -rev B0 -append ./tools/mx8qm-ahab-container.img -c -flags 0x01210000 -scfw ./tools/scfw_tcm.bin -ap ./tools/ipl-imx8qm-cpu-mek.bin a53 0x80000000 -p3 -m4 ./tools/m4_image.bin 0 0x34FE0000 -out ipl-imx8qm-cpu-mek_b0.imx	
+	# ./tools/mkimage_imx8 -soc QM -rev B0 -append ./tools/mx8qm-ahab-container.img -c -flags 0x01210000 -scfw ./tools/scfw_tcm.bin -ap ./tools/ipl-imx8qm-cpu-mek.bin a53 0x80000000 -p3 -m4 ./tools/m4_image.bin 0 0x34FE0000 -out ipl-imx8qm-cpu-mek_b0.imx	
 	
 
 
