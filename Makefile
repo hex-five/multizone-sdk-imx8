@@ -54,19 +54,13 @@ all: clean
 	$(MAKE) -C zone3
 	$(MAKE) -C zone4
 	java -jar multizone.jar \
-	-v \
-	-k ../hexfive-kern-arm/build/$(BOARD)/kernel.hex \
-	-a $(BOARD) \
-	-c bsp/$(BOARD)/multizone.cfg \
+	--arch $(BOARD) \
+	--config bsp/$(BOARD)/multizone.cfg \
 	zone1/zone1.elf \
 	zone2/zone2.elf \
 	zone3/zone3.elf \
 	zone4/zone4.elf
-	$(OBJCOPY) -S -Iihex -Obinary multizone.hex multizone.bin
-	cp multizone.bin ./tools/m4_image.bin
-	# ./tools/mkimage_imx8 -soc QM -rev B0 -append ./tools/mx8qm-ahab-container.img -c -flags 0x01210000 -scfw ./tools/scfw_tcm.bin -ap ./tools/ipl-imx8qm-cpu-mek.bin a53 0x80000000 -p3 -m4 ./tools/m4_image.bin 0 0x34FE0000 -out ipl-imx8qm-cpu-mek_b0.imx	
-	
-
+	$(OBJCOPY) -S -Iihex -Obinary multizone.hex multizone.bin 1>/dev/null
 
 .PHONY: clean
 clean: 
@@ -74,5 +68,5 @@ clean:
 	$(MAKE) -C zone2 clean
 	$(MAKE) -C zone3 clean
 	$(MAKE) -C zone4 clean
-	rm -f multizone.hex multizone.bin ./tools/m4_image.bin
+	rm -f multizone.hex multizone.bin
 	
