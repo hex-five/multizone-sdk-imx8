@@ -1,0 +1,11 @@
+# NXP mkimage
+
+1. Download using git: 
+$ git clone https://source.codeaurora.org/external/imx/imx-mkimage/
+
+2. Checkout for branch imx_4.19.35_1.1.0:
+$ git checkout imx_4.19.35_1.1.0
+
+3. Compile mkimage:
+$ make
+
