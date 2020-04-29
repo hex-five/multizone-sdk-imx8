@@ -1,0 +1,6 @@
+# QNX dependencies
+
+1. MultiZone QNX Application (mz folder)
+
+2. Copy QNX image ipl-imx8qm-cpu-mek.bin to this folder
+* Please refer to the MultiZone Security on i.MX8MQ-MEK User’s Guide for Instructions on how to build the QNX image 

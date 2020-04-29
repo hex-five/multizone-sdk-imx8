@@ -1,0 +1,8 @@
+# MultiZone QNX Application
+
+1. Source QNX environment variables
+
+2. Compile MZ application
+$ make
+
+3. 
