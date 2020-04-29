@@ -60,7 +60,7 @@ all: clean
 	zone2/zone2.elf \
 	zone3/zone3.elf \
 	zone4/zone4.elf
-	$(OBJCOPY) -S -Iihex -Obinary multizone.hex multizone.bin 1>/dev/null
+	@$(OBJCOPY) -S -Iihex -Obinary multizone.hex multizone.bin
 
 .PHONY: clean
 clean: 
