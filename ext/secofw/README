@@ -1,9 +1,11 @@
+/* Copyright(C) 2020 Hex Five Security, Inc. - All Rights Reserved */
+
 # SECO Firmware
 
-1. Download the SECOFW (NXP account is needed): 
-https://community.nxp.com/external-link.jspa?url=http%3A%2F%2Fwww.nxp.com%2Flgfiles%2FNMG%2FMAD%2FYOCTO%2Ffirmware-imx-8.1.bin
+1. Download firmware-imx-8.1.bin: 
+wget http://www.nxp.com/lgfiles/NMG/MAD/YOCTO/firmware-imx-8.1.bin
 
-2. Extract the SECOFW
-$ sudo chmod a+x ./firmware-imx-8.1.bin
+2. Extract the archive
+$ chmod u+x ./firmware-imx-8.1.bin
 $ ./firmware-imx-8.1.bin
 

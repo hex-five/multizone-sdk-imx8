@@ -53,4 +53,27 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# MultiZone SDK
+
+/.settings/
 /.project
+/.cproject
+
+/ext/mkimage/*
+!/ext/mkimage/README
+
+/ext/openocd
+!/ext/openocd/README
+
+/ext/scfw/*
+!/ext/secofw/README
+!/ext/secofw/board.patch
+
+/ext/secofw/*
+!/ext/secofw/README
+
+/ext/qnx/*
+!/ext/qnx/README
+!/ext/qnx/multizone-qnx-test.c
+!/ext/qnx/Makefile

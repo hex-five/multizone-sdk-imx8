@@ -1,12 +1,14 @@
-# NXP mkimage
+/* Copyright(C) 2020 Hex Five Security, Inc. - All Rights Reserved */
 
-1. Download using git: 
+# NXP mkimage tool
+
+1. Clone the git repository: 
 $ git clone https://source.codeaurora.org/external/imx/imx-mkimage/
 
 2. Change directory:
 $ cd imx-mkimage 
 
-3. Checkout for branch imx_4.19.35_1.1.0:
+3. Switch to branch imx_4.19.35_1.1.0:
 $ git checkout imx_4.19.35_1.1.0
 
 4. Compile mkimage:

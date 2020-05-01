@@ -1,9 +1,11 @@
+/* Copyright(C) 2020 Hex Five Security, Inc. - All Rights Reserved */
+
 # System Controller Firmware (SCFW)
 
-1. Download the SCFW porting kit (need to accept license): 
+1. Download the SCFW porting kit: 
 https://www.nxp.com/webapp/Download?colCode=L4.19.35_1.1.0_SCFWKIT-1.2.7.1&appType=license 
 
-2. Extract the SCFW package and run the accept license program: 
+2. Extract the folder: 
 $ tar -xvzf imx-scfw-porting-kit-1.2.7.1.tar.gz
 $ cd imx-scfw-porting-kit-1.2.7.1/packages
 $ sudo chmod a+x ./imx-scfw-porting-kit-1.2.7.1.bin

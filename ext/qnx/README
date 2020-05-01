@@ -1,6 +1,12 @@
+/* Copyright(C) 2020 Hex Five Security, Inc. - All Rights Reserved */
+
 # QNX dependencies
 
-1. MultiZone QNX Application (mz folder)
+1. Build the multizone-qnx-test application
 
-2. Copy QNX image ipl-imx8qm-cpu-mek.bin to this folder
-* Please refer to the MultiZone Security on i.MX8MQ-MEK User’s Guide for Instructions on how to build the QNX image 
+2. Build the QNX image includind the multizone-qnx-test
+
+3. Copy the QNX image ipl-imx8qm-cpu-mek.bin to this folder
+
+* See MultiZone User’s Guide for detailed instructions.
+
