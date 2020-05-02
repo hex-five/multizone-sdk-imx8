@@ -67,8 +67,8 @@ dkms.conf
 !/ext/openocd/README
 
 /ext/scfw/*
-!/ext/secofw/README
-!/ext/secofw/board.patch
+!/ext/scfw/README
+!/ext/scfw/board.patch
 
 /ext/secofw/*
 !/ext/secofw/README

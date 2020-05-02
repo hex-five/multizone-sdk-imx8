@@ -1,0 +1,229 @@
+--- board.772febc.c	2020-05-01 23:19:07.895575520 +0100
++++ board.c	2020-05-01 23:19:50.061266859 +0100
+@@ -716,10 +716,6 @@
+     if (alt_config != SC_FALSE)
+     {
+         sc_rm_pt_t pt_m4_0;
+-        sc_rm_pt_t pt_m4_1;
+-        sc_rm_mr_t mr_m4_0, mr_m4_1;
+-        sc_rm_pt_t pt_sh;
+-        sc_rm_mr_t mr_sh;
+ 
+         #ifdef BOARD_RM_DUMP
+             rm_dump(pt_boot);
+@@ -727,123 +723,75 @@
+ 
+         /* Mark all resources as not movable */
+         BRD_ERR(rm_set_resource_movable(pt_boot, SC_R_ALL, SC_R_ALL,
+-            SC_FALSE));
++            SC_TRUE));
+         BRD_ERR(rm_set_pad_movable(pt_boot, SC_P_ALL, SC_P_ALL,
+-            SC_FALSE));
++            SC_TRUE));
+         
+         /* Allocate M4_0 partition */
+         BRD_ERR(rm_partition_alloc(pt_boot, &pt_m4_0, SC_FALSE, SC_TRUE,
+             SC_FALSE, SC_TRUE, SC_FALSE));
+-        
+-        /* Mark all M4_0 subsystem resources as movable */
+-        BRD_ERR(rm_set_subsys_rsrc_movable(pt_boot, SC_R_M4_0_PID0,
+-            SC_TRUE));
+-        BRD_ERR(rm_set_pad_movable(pt_boot, SC_P_M40_I2C0_SCL,
+-            SC_P_M40_GPIO0_01, SC_TRUE));
+-
+-        /* Move some resources not in the M4_0 subsystem */
+-        BRD_ERR(rm_set_resource_movable(pt_boot, SC_R_SYSTEM,
+-            SC_R_SYSTEM, SC_TRUE));
+-        BRD_ERR(rm_set_resource_movable(pt_boot, SC_R_IRQSTR_M4_0,
+-            SC_R_IRQSTR_M4_0, SC_TRUE));
+-        BRD_ERR(rm_set_resource_movable(pt_boot, SC_R_MU_5B,
+-            SC_R_MU_5B, SC_TRUE));
+-        BRD_ERR(rm_set_resource_movable(pt_boot, SC_R_MU_7A,
+-            SC_R_MU_7A, SC_TRUE));
+-        BRD_ERR(rm_set_resource_movable(pt_boot, SC_R_MU_8B,
+-            SC_R_MU_8B, SC_TRUE));
+-        BRD_ERR(rm_set_resource_movable(pt_boot, SC_R_GPT_4,
+-            SC_R_GPT_4, SC_TRUE));
+ 
+-        /* Move everything flagged as movable */
++        /* Move all rsc and pads to M4_0 */
+         BRD_ERR(rm_move_all(pt_boot, pt_boot, pt_m4_0, SC_TRUE, SC_TRUE));
+ 
+         /* Allow all to access the SEMA42 */
+         BRD_ERR(rm_set_peripheral_permissions(pt_m4_0, SC_R_M4_0_SEMA42,
+             SC_RM_PT_ALL, SC_RM_PERM_FULL));
+ 
+-        /* Move M4 0 TCM */
+-        BRD_ERR(rm_find_memreg(pt_boot, &mr_m4_0, 0x034FE0000ULL,
+-            0x034FE0000ULL));
+-        BRD_ERR(rm_assign_memreg(pt_boot, pt_m4_0, mr_m4_0));
+-
+-        /* Reserve DDR for M4_0 */
+-        BRD_ERR(rm_memreg_frag(pt_boot, &mr_m4_0, 0x088000000ULL,
+-            0x0887FFFFFULL));
+-        BRD_ERR(rm_assign_memreg(pt_boot, pt_m4_0, mr_m4_0));
+-
+-        /* Reserve FlexSPI for M4_0 */
+-        BRD_ERR(rm_memreg_frag(pt_boot, &mr_m4_0, 0x08081000ULL,
+-            0x08180FFFULL));
+-        BRD_ERR(rm_assign_memreg(pt_boot, pt_m4_0, mr_m4_0));
+-
+-        /* Allocate M4_1 partition */
+-        BRD_ERR(rm_partition_alloc(pt_boot, &pt_m4_1, SC_FALSE, SC_TRUE,
+-            SC_FALSE, SC_TRUE, SC_FALSE));
+-
+-        /* Mark all M4_1 subsystem resources as movable */
+-        BRD_ERR(rm_set_subsys_rsrc_movable(pt_boot, SC_R_M4_1_PID0,
+-            SC_TRUE));
+-        BRD_ERR(rm_set_pad_movable(pt_boot, SC_P_M41_I2C0_SCL,
+-            SC_P_M41_GPIO0_01, SC_TRUE));
+-
+-        /* Move some resources not in the M4_1 subsystem */
+-        BRD_ERR(rm_set_resource_movable(pt_boot, SC_R_IRQSTR_M4_1,
+-            SC_R_IRQSTR_M4_1, SC_TRUE));
+-        BRD_ERR(rm_set_resource_movable(pt_boot, SC_R_UART_2,
+-            SC_R_UART_2, SC_TRUE));
+-        BRD_ERR(rm_set_pad_movable(pt_boot, SC_P_UART0_CTS_B,
+-            SC_P_UART0_RTS_B, SC_TRUE));
+-        BRD_ERR(rm_set_resource_movable(pt_boot, SC_R_MU_6B,
+-            SC_R_MU_6B, SC_TRUE));
+-        BRD_ERR(rm_set_resource_movable(pt_boot, SC_R_MU_7B,
+-            SC_R_MU_7B, SC_TRUE));
+-        BRD_ERR(rm_set_resource_movable(pt_boot, SC_R_MU_9B,
+-            SC_R_MU_9B, SC_TRUE));
+-        BRD_ERR(rm_set_resource_movable(pt_boot, SC_R_GPT_3,
+-            SC_R_GPT_3, SC_TRUE));
+-        BRD_ERR(rm_set_resource_movable(pt_boot, SC_R_CAN_0,
+-            SC_R_CAN_2, SC_TRUE));
+-        BRD_ERR(rm_set_resource_movable(pt_boot, SC_R_FSPI_0,
+-            SC_R_FSPI_0, SC_TRUE));
+-
+-        /* Move some pads not in the M4_1 subsystem */
+-        BRD_ERR(rm_set_pad_movable(pt_boot, SC_P_FLEXCAN0_RX,
+-            SC_P_FLEXCAN2_TX, SC_TRUE));
+-        BRD_ERR(rm_set_pad_movable(pt_boot, SC_P_QSPI0A_DATA0,
+-            SC_P_COMP_CTL_GPIO_1V8_3V3_QSPI0, SC_TRUE));
+-
+-        /* Move everything flagged as movable */
+-        BRD_ERR(rm_move_all(pt_boot, pt_boot, pt_m4_1, SC_TRUE, SC_TRUE));
+-
+-        /* Allow all to access the SEMA42 */
+-        BRD_ERR(rm_set_peripheral_permissions(pt_m4_1, SC_R_M4_1_SEMA42,
+-            SC_RM_PT_ALL, SC_RM_PERM_FULL));
+-
+-        /* Move M4 1 TCM */
+-        BRD_ERR(rm_find_memreg(pt_boot, &mr_m4_1, 0x038FE0000ULL,
+-            0x038FE0000ULL));
+-        BRD_ERR(rm_assign_memreg(pt_boot, pt_m4_1, mr_m4_1));
+-
+-        /* Reserve DDR for M4_1 */
+-        BRD_ERR(rm_memreg_frag(pt_boot, &mr_m4_1, 0x088800000ULL,
+-            0x08FFFFFFFULL));
+-        BRD_ERR(rm_assign_memreg(pt_boot, pt_m4_1, mr_m4_1));
+-
+-        /* Reserve FlexSPI for M4_1 */
+-        BRD_ERR(rm_memreg_frag(pt_boot, &mr_m4_1, 0x08181000ULL,
+-            0x08280FFFULL));
+-        BRD_ERR(rm_assign_memreg(pt_boot, pt_m4_1, mr_m4_1));
+-
+-        /* Allow AP and M4_1 to use SYSTEM */
+-        BRD_ERR(rm_set_peripheral_permissions(pt_m4_0, SC_R_SYSTEM,
+-            pt_boot, SC_RM_PERM_SEC_RW));
+-        BRD_ERR(rm_set_peripheral_permissions(pt_m4_0, SC_R_SYSTEM,
+-            pt_m4_1, SC_RM_PERM_SEC_RW));
++        /* Delete current memory map in control of pt_boot */
++        sc_rm_mr_t mr_pt_free;
++        // On chip RAM and XIP memories.
++        BRD_ERR(rm_find_memreg(pt_boot, &mr_pt_free, 0x000000000ULL,
++            0x01BFFFFFFULL));
++        BRD_ERR(rm_memreg_free(pt_boot, mr_pt_free));
++        // M4_0 private TCM - 256KB
++        BRD_ERR(rm_find_memreg(pt_boot, &mr_pt_free, 0x034000000ULL,
++            0x037FFFFFFULL));
++        BRD_ERR(rm_memreg_free(pt_boot, mr_pt_free));
++        // M4_1 private TCM - 256KB
++        BRD_ERR(rm_find_memreg(pt_boot, &mr_pt_free, 0x038000000ULL,
++            0x03BFFFFFFULL));
++        BRD_ERR(rm_memreg_free(pt_boot, mr_pt_free));
++        // PCIe0
++        BRD_ERR(rm_find_memreg(pt_boot, &mr_pt_free, 0x060000000ULL,
++            0x06FFFFFFFULL));
++        BRD_ERR(rm_memreg_free(pt_boot, mr_pt_free));
++        // PCIe1
++        BRD_ERR(rm_find_memreg(pt_boot, &mr_pt_free, 0x070000000ULL,
++            0x07FFFFFFFULL));
++        BRD_ERR(rm_memreg_free(pt_boot, mr_pt_free));
++        // DDR (low)
++        BRD_ERR(rm_find_memreg(pt_boot, &mr_pt_free, 0x080000000ULL,
++            0x0FFFFFFFFULL));
++        BRD_ERR(rm_memreg_free(pt_boot, mr_pt_free));
++        // FlexSPI1 + Other 
++        BRD_ERR(rm_find_memreg(pt_boot, &mr_pt_free, 0x400000000ULL,
++            0x43FFFFFFFULL));
++        BRD_ERR(rm_memreg_free(pt_boot, mr_pt_free));
++        // DDR (high) 
++        BRD_ERR(rm_find_memreg(pt_boot, &mr_pt_free, 0x880000000ULL,
++            0xFFFFFFFFFULL));
++        BRD_ERR(rm_memreg_free(pt_boot, mr_pt_free));
++
++        /* Make memory map in control of M4_0 */
++        BRD_ERR(rm_memreg_alloc(SC_PT, &mr_pt_free, 0x000000000ULL,
++            0x01BFFFFFFULL));
++        BRD_ERR(rm_assign_memreg(SC_PT, pt_m4_0, mr_pt_free));
++        BRD_ERR(rm_memreg_alloc(SC_PT, &mr_pt_free, 0x034000000ULL,
++            0x03BFFFFFFULL));
++        BRD_ERR(rm_assign_memreg(SC_PT, pt_m4_0, mr_pt_free));
++        BRD_ERR(rm_memreg_alloc(SC_PT, &mr_pt_free, 0x060000000ULL,
++            0x0FFFFFFFFULL));
++        BRD_ERR(rm_assign_memreg(SC_PT, pt_m4_0, mr_pt_free));
++        BRD_ERR(rm_memreg_alloc(SC_PT, &mr_pt_free, 0x400000000ULL,
++            0x43FFFFFFFULL));
++        BRD_ERR(rm_assign_memreg(SC_PT, pt_m4_0, mr_pt_free));
++        BRD_ERR(rm_memreg_alloc(SC_PT, &mr_pt_free, 0x880000000ULL,
++            0xFFFFFFFFFULL));
++        BRD_ERR(rm_assign_memreg(SC_PT, pt_m4_0, mr_pt_free));
+ 
+         /* Move partition to be owned by SC */
+         BRD_ERR(rm_set_parent(pt_boot, pt_m4_0, SC_PT));
+-        BRD_ERR(rm_set_parent(pt_boot, pt_m4_1, SC_PT));
+ 
+         /* Move boot to be owned by M4 0 */
+         if (no_ap != SC_FALSE)
+@@ -851,32 +799,6 @@
+             BRD_ERR(rm_set_parent(SC_PT, pt_boot, pt_m4_0));
+         }
+ 
+-        /* Allocate shared partition */
+-        BRD_ERR(rm_partition_alloc(SC_PT, &pt_sh, SC_FALSE, SC_TRUE,
+-            SC_FALSE, SC_FALSE, SC_FALSE));
+-
+-        /* Create shared memory space */
+-        BRD_ERR(rm_memreg_frag(pt_boot, &mr_sh,
+-            0x090000000ULL, 0x091FFFFFFULL));
+-        BRD_ERR(rm_assign_memreg(pt_boot, pt_sh, mr_sh));
+-        BRD_ERR(rm_set_memreg_permissions(pt_sh, mr_sh, pt_boot,
+-            SC_RM_PERM_FULL));
+-        BRD_ERR(rm_set_memreg_permissions(pt_sh, mr_sh, pt_m4_0,
+-            SC_RM_PERM_FULL));
+-        BRD_ERR(rm_set_memreg_permissions(pt_sh, mr_sh, pt_m4_1,
+-            SC_RM_PERM_FULL));
+-
+-        /* Protect some resources */
+-        /* M4 PID1-4 can be used to allow M4 to map to other SID */      
+-        BRD_ERR(rm_assign_resource(pt_m4_0, pt_sh, SC_R_M4_0_PID1));
+-        BRD_ERR(rm_assign_resource(pt_m4_0, pt_sh, SC_R_M4_0_PID2));
+-        BRD_ERR(rm_assign_resource(pt_m4_0, pt_sh, SC_R_M4_0_PID3));
+-        BRD_ERR(rm_assign_resource(pt_m4_0, pt_sh, SC_R_M4_0_PID4));
+-        BRD_ERR(rm_assign_resource(pt_m4_1, pt_sh, SC_R_M4_1_PID1));
+-        BRD_ERR(rm_assign_resource(pt_m4_1, pt_sh, SC_R_M4_1_PID2));
+-        BRD_ERR(rm_assign_resource(pt_m4_1, pt_sh, SC_R_M4_1_PID3));
+-        BRD_ERR(rm_assign_resource(pt_m4_1, pt_sh, SC_R_M4_1_PID4));
+-
+         #ifdef BOARD_RM_DUMP
+             rm_dump(pt_boot);
+         #endif
+@@ -1777,4 +1699,3 @@
+ }
+ 
+ /**@}*/
+-

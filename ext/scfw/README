@@ -8,6 +8,16 @@ https://www.nxp.com/webapp/Download?colCode=L4.19.35_1.1.0_SCFWKIT-1.2.7.1&appTy
 2. Extract the folder: 
 $ tar -xvzf imx-scfw-porting-kit-1.2.7.1.tar.gz
 $ cd imx-scfw-porting-kit-1.2.7.1/packages
-$ sudo chmod a+x ./imx-scfw-porting-kit-1.2.7.1.bin
+$ chmod u+x ./imx-scfw-porting-kit-1.2.7.1.bin
 $ ./imx-scfw-porting-kit-1.2.7.1.bin
+$ cd imx-scfw-porting-kit-1.2.7.1/src
+$ tar -xvzf scfw_export_mx8qm_b0.tar.gz
+
+3. Patch and build the MultiZone modified version of the NXP firmware:
+$ export GNU_ARM=~/gcc-arm-none-eabi-8-2019-q3-update/bin
+$ export PATH=$PATH:~/gcc-arm-none-eabi-8-2019-q3-update/bin
+$ cd ~/multizone-sdk-imx8/ext/scfw
+$ patch packages/imx-scfw-porting-kit-1.2.7.1/src/scfw_export_mx8qm_b0/platform/board/mx8qm_mek/board.c < board.patch
+$ cd packages/imx-scfw-porting-kit-1.2.7.1/src/scfw_export_mx8qm_b0
+$ make qm R=b0 B=mek CROSS_COMPILE=arm-none-eabi-
 
