@@ -2,14 +2,11 @@
 
 # NXP mkimage tool
 
-1. Clone the git repository: 
-$ git clone https://source.codeaurora.org/external/imx/imx-mkimage/
+1. Clone the git repository branch: 
+$ git clone --single-branch --branch imx_4.19.35_1.1.0 https://source.codeaurora.org/external/imx/imx-mkimage
 
 2. Change directory:
 $ cd imx-mkimage 
-
-3. Switch to branch imx_4.19.35_1.1.0:
-$ git checkout imx_4.19.35_1.1.0
 
 4. Compile mkimage:
 $ make

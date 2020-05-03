@@ -1,4 +1,4 @@
-/* Copyright(C) 2020 Hex Five Security, Inc. - All Rights Reserved */
+# Copyright(C) 2020 Hex Five Security, Inc. - All Rights Reserved
 
 CROSS_COMPILE := $(QNX_HOST)/usr/bin/aarch64-unknown-nto-qnx7.0.0-
 CC:=$(CROSS_COMPILE)gcc

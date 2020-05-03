@@ -60,13 +60,15 @@ all: clean
 	zone2/zone2.elf \
 	zone3/zone3.elf \
 	zone4/zone4.elf
-	@$(OBJCOPY) -S -Iihex -Obinary multizone.hex multizone.bin
+	@$(OBJCOPY) -S -Iihex -Obinary multizone.hex multizone.bin > /dev/null
 
-	@ ./ext/mkimage/imx-mkimage/mkimage_imx8 -soc QM -rev B0 -append \
+	@./ext/mkimage/imx-mkimage/mkimage_imx8 -soc QM -rev B0 -append \
 	./ext/secofw/firmware-imx-8.1/firmware/seco/mx8qm-ahab-container.img \
-	-c -flags 0x01210000 -scfw ./scfw_tcm.bin \
+	-c -flags 0x01210000 \
+	-scfw ./ext/scfw/packages/imx-scfw-porting-kit-1.2.7.1/src/scfw_export_mx8qm_b0/build_mx8qm_b0/scfw_tcm.bin \
+	-ap ./ext/qnx/ipl-imx8qm-cpu-mek.bin a53 0x80000000 \
 	-p3 -m4 ./multizone.bin 0 0x34FE0000 \
-	-out multizone.imx
+	-out multizone.imx > /dev/null 2>&1
  
 .PHONY: clean
 clean: 
