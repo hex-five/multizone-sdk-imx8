@@ -2,5 +2,11 @@
 
 # OpenOCD for imx8
 
-TBD
+1) extract the archive
+tar -xvzf imx8-openocd-20200504.tar.xz
+
+2) set environment
+export OPENOCD=~/multizone-sdk-imx8/ext/openocd/openocd-imx8qm/bin
+export PATH=$PATH:~/multizone-sdk-imx8/ext/openocd/openocd-imx8qm/bin
+
 
